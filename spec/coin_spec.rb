@@ -6,9 +6,10 @@ RSpec.describe VendingMachine::Coin do
     coins = [1, 2, 5, 10, 20, 50]
     coins.each do |coin|
       coin_formatted = "#{coin}p"
-      expect(described_class.new(coin_formatted).pence).to eq(coin)
-      expect(described_class.new(coin_formatted).is_valid?).to eq(true)
-      expect(described_class.new(coin_formatted).formatted).to eq(coin_formatted)
+      under_test = described_class.new(coin_formatted)
+      expect(under_test.pence).to eq(coin)
+      expect(under_test.is_valid?).to eq(true)
+      expect(under_test.formatted).to eq(coin_formatted)
     end
   end
 
@@ -16,9 +17,10 @@ RSpec.describe VendingMachine::Coin do
     coins = [1, 2]
     coins.each do |coin|
       coin_formatted = "£#{coin}"
-      expect(described_class.new(coin_formatted).pence).to eq(coin * 100)
-      expect(described_class.new(coin_formatted).is_valid?).to eq(true)
-      expect(described_class.new(coin_formatted).formatted).to eq(coin_formatted)
+      under_test = described_class.new(coin_formatted)
+      expect(under_test.pence).to eq(coin * 100)
+      expect(under_test.is_valid?).to eq(true)
+      expect(under_test.formatted).to eq(coin_formatted)
     end
   end
 
@@ -26,9 +28,10 @@ RSpec.describe VendingMachine::Coin do
     coins = [3, 40, 100, 200, 300, 1000]
     coins.each do |coin|
       coin_formatted = "#{coin}p"
-      expect(described_class.new(coin_formatted).pence).to eq(0)
-      expect(described_class.new(coin_formatted).is_valid?).to eq(false)
-      expect(described_class.new(coin_formatted).formatted).to eq('0p')
+      under_test = described_class.new(coin_formatted)
+      expect(under_test.pence).to eq(0)
+      expect(under_test.is_valid?).to eq(false)
+      expect(under_test.formatted).to eq('0p')
     end
   end
 

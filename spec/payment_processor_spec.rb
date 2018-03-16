@@ -1,6 +1,6 @@
 require_relative "../lib/coin"
-require_relative "../lib/../lib/payment_processor"
-require_relative "../lib/../lib/../lib/product"
+require_relative "../lib/payment_processor"
+require_relative "../lib/product"
 
 
 RSpec.describe VendingMachine::PaymentProcessor do

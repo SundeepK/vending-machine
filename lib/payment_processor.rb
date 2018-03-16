@@ -1,5 +1,6 @@
 require 'pry'
 require 'set'
+
 module VendingMachine
   class PaymentProcessor
     InsufficientBalance = Class.new(StandardError)
@@ -36,21 +37,21 @@ module VendingMachine
       change = inserted_total_pence - product.price
       assert_coins_inserted(inserted_total_pence, product)
       assert_enough_balance(change)
-      if change > 0
+      if change < 0
         while change > 0
           coin = sorted_coins.find { |coin| change >= coin.pence }
           assert_sufficient_coins(coin)
           change = change - coin.pence
-          update_available_coins(coin, coins_to_ret)
+          update_coins_to_return(coin, coins_to_ret)
           current_coins[coin] = current_coins[coin] - 1
           if current_coins[coin] <= 0
             current_coins.delete coin
             sorted_coins.delete coin
           end
         end
+        @coins_to_count = current_coins
+        deposit_coins(inserted_coins)
       end
-      @coins_to_count = current_coins
-      deposit_coins(inserted_coins)
       coins_to_ret
     end
 
@@ -60,7 +61,7 @@ module VendingMachine
       end
     end
 
-    def update_available_coins(coin, coins_to_ret)
+    def update_coins_to_return(coin, coins_to_ret)
       if coins_to_ret.has_key? coin
         coins_to_ret[coin] = coins_to_ret[coin] + 1
       else

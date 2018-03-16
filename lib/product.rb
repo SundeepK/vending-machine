@@ -8,5 +8,22 @@ module VendingMachine
       @name = name
       @price = price
     end
+
+    def ==(o)
+      o.class == self.class && o.state == state
+    end
+
+    protected
+
+    def state
+      [@name, @price]
+    end
+
+    alias_method :eql?, :==
+
+    def hash
+      state.hash
+    end
+
   end
 end
