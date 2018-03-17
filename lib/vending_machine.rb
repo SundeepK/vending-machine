@@ -10,8 +10,24 @@ module VendingMachine
       @inventory = inventory
     end
 
+    def get_change
+      @payment_processor.get_coins
+    end
+
+    def top_up_coins(coin, count)
+      @payment_processor.add_coin(coin, count)
+    end
+
     def get_products
       @inventory.list.clone
+    end
+
+    def add_stock(products)
+      @inventory.add_stock products
+    end
+
+    def get_all_stock
+      @inventory.get_all_stock
     end
 
     def get_product(name)

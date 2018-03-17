@@ -8,15 +8,19 @@ require 'coin'
 require 'payment_processor'
 require 'tty-prompt'
 
-def get_price_formatted(product)
+def get_price_formatted(product, count)
   formatted_price = product.price >= 100 ? "£#{product.price / 100}" : "#{product.price}p"
-  "#{product.name}: #{formatted_price}"
+  "#{product.name}: #{formatted_price} (remaining #{count})"
 end
 
-def print_product(products)
+def print_product(products, stock)
   products.map {|product|
-    get_price_formatted(product)
+    get_price_formatted(product, stock[product])
   }
+  end
+
+def print_coins(coins, all_coins)
+  coins.map {|coin| "#{coin.formatted} (remaining #{all_coins[coin]})" }
 end
 
 accepted_coins = [VendingMachine::Coin.new('£1'),
@@ -44,15 +48,17 @@ stock = {
 vending_machine = VendingMachine::Machine.new(VendingMachine::PaymentProcessor.new(coins), VendingMachine::Inventory.new(stock))
 
 prompt = TTY::Prompt.new
-choices = %w(list buy exit)
+choices = %w(list buy reload-products top-up-change exit)
 
 while true
   selection = prompt.enum_select('Select option', choices, default: 1)
   if selection == 'list'
-    p print_product(vending_machine.get_products)
+    all_stock = vending_machine.get_all_stock
+    puts print_product(all_stock.keys, all_stock)
   elsif selection == 'buy'
-    products = vending_machine.get_products
-    print_to_select = print_product(products) << 'back'
+    all_stock = vending_machine.get_all_stock
+    products = all_stock.keys
+    print_to_select = print_product(products, all_stock) << 'back'
     selection = prompt.enum_select('Selected ', print_to_select, default: 1)
     item = print_to_select.each_index.select { |index| print_to_select[index] == selection }.first
 
@@ -79,6 +85,31 @@ while true
 
     vending_machine.buy_product product_to_buy, coins_to_insert
 
+  elsif selection == 'reload-products'
+    all_stock = vending_machine.get_all_stock
+    products = all_stock.keys
+    print_to_select = print_product(products, all_stock) << 'back'
+    selection = prompt.enum_select('Selected ', print_to_select, default: 1)
+    item = print_to_select.each_index.select { |index| print_to_select[index] == selection }.first
+
+    product_to_top_up = products[item]
+    amount = prompt.ask('Provide number in range: 1-100?') { |q| q.in('1-100') }
+    vending_machine.add_stock({ product_to_top_up => amount.to_i })
+  elsif selection == 'top-up-change'
+
+    all_coins = vending_machine.get_change
+    coins = all_coins.keys
+    print_to_select = print_coins(coins, all_coins) << 'back'
+    selection = prompt.enum_select('Selected ', print_to_select, default: 1)
+    item = print_to_select.each_index.select { |index| print_to_select[index] == selection }.first
+
+    if selection == 'back'
+      next
+    end
+
+    coin_to_top_up = coins[item]
+    amount = prompt.ask('Provide number in range: 1-100?') { |q| q.in('1-100') }
+    vending_machine.top_up_coins(coin_to_top_up, amount.to_i)
   else
     exit
   end
