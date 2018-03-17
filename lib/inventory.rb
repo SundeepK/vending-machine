@@ -26,7 +26,7 @@ module VendingMachine
     end
 
     def get_product(name)
-      @product_to_stock.find { |product, count| product.name == name }
+      @product_to_stock.find { |product, count| product.name == name }.first
     end
 
     def get_all_stock

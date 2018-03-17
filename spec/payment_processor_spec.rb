@@ -5,7 +5,7 @@ require_relative "../lib/product"
 
 RSpec.describe VendingMachine::PaymentProcessor do
 
-  it 'returns change for cola 50p' do
+  it 'returns change 1' do
     payment_processor = described_class.new(given_coins)
 
     expected_change = {
@@ -30,7 +30,31 @@ RSpec.describe VendingMachine::PaymentProcessor do
     expect(payment_processor.get_coins).to eq(expected_vending_machine_coins)
   end
 
-  it 'returns change for mars £1.25' do
+  it 'returns change 2' do
+    payment_processor = described_class.new(given_coins)
+
+    expected_change = {
+        VendingMachine::Coin.new('10p') => 1,
+    }
+
+    expected_vending_machine_coins = {
+        VendingMachine::Coin.new('£1') => 2,
+        VendingMachine::Coin.new('£2') => 2,
+        VendingMachine::Coin.new('20p') => 8,
+        VendingMachine::Coin.new('10p') => 4,
+        VendingMachine::Coin.new('1p') => 5
+    }
+
+    payment_coins = {
+        VendingMachine::Coin.new('20p') => 3
+    }
+
+    actual_change = payment_processor.take_payment(payment_coins, VendingMachine::Product.new('Cola', 50))
+    expect(actual_change).to eq(expected_change)
+    expect(payment_processor.get_coins).to eq(expected_vending_machine_coins)
+  end
+
+  it 'returns change 3' do
     payment_processor = described_class.new(given_coins)
 
     expected_change = {

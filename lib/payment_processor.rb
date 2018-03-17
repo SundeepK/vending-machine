@@ -37,7 +37,7 @@ module VendingMachine
       change = inserted_total_pence - product.price
       assert_coins_inserted(inserted_total_pence, product)
       assert_enough_balance(change)
-      if change < 0
+      if change > 0
         while change > 0
           coin = sorted_coins.find { |coin| change >= coin.pence }
           assert_sufficient_coins(coin)
@@ -49,9 +49,9 @@ module VendingMachine
             sorted_coins.delete coin
           end
         end
-        @coins_to_count = current_coins
-        deposit_coins(inserted_coins)
       end
+      @coins_to_count = current_coins
+      deposit_coins(inserted_coins)
       coins_to_ret
     end
 
