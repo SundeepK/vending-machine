@@ -9,7 +9,7 @@ module VendingMachine
     attr_accessor :balance_in_pence
 
     def initialize(coins_to_count = {})
-      @coins_to_count = coins_to_count
+      @change = coins_to_count
       @balance_in_pence = sum_coins_pence(coins_to_count)
     end
 
@@ -18,19 +18,15 @@ module VendingMachine
     end
 
     def add_coin(coin, num_of_coins)
-      if @coins_to_count.has_key? coin
-        @coins_to_count[coin] = @coins_to_count[coin] + num_of_coins
-      else
-        @coins_to_count[coin] = num_of_coins
-      end
+      @change[coin] = @change.has_key?(coin) ? @change[coin] + num_of_coins : num_of_coins
     end
 
     def get_coins
-      @coins_to_count.clone
+      @change.clone
     end
 
     def take_payment(inserted_coins, product)
-      current_coins = @coins_to_count.clone
+      current_coins = @change.clone
       sorted_coins = Set.new(current_coins.keys.sort { |a,b| b.pence <=> a.pence })
       inserted_total_pence = sum_coins_pence(inserted_coins)
       coins_to_ret = {}
@@ -50,7 +46,7 @@ module VendingMachine
           end
         end
       end
-      @coins_to_count = current_coins
+      @change = current_coins
       deposit_coins(inserted_coins)
       coins_to_ret
     end
@@ -83,13 +79,13 @@ module VendingMachine
 
     def deposit_coins(coins)
       coins.each do |coin, count|
-        if @coins_to_count.has_key? coin
-          @coins_to_count[coin] = @coins_to_count[coin] + count
+        if @change.has_key? coin
+          @change[coin] = @change[coin] + count
         else
-          @coins_to_count[coin] = count
+          @change[coin] = count
         end
       end
-      @balance_in_pence = sum_coins_pence(@coins_to_count)
+      @balance_in_pence = sum_coins_pence(@change)
     end
 
   end

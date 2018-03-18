@@ -47,7 +47,9 @@ module VendingMachine
         change = @payment_processor.take_payment coins, product
         @inventory.remove product
         print_change(change, product)
-      rescue TypeError, NameError => e
+      rescue VendingMachine::Inventory::StockNotFoundError,
+          VendingMachine::PaymentProcessor::InsufficientBalance,
+          VendingMachine::PaymentProcessor::InsufficientCoins => e
         puts "#{e.message}"
       end
       change
