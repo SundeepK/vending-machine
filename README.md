@@ -19,7 +19,8 @@ Run:
 ## Vending machine
 Run:
 ```bash
-    $ bundle exec ./bin/vending_machine_runner.rb
+    $ ./bin/vending_machine
 ```
+You can also build and install the gem and then run the `vending_machine` from command line.
 
 This will launch a simple console app where you can select options to list, buy top up product stock or change.
