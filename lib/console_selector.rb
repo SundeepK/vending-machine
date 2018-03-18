@@ -52,7 +52,7 @@ module VendingMachine
       total_inserted_balance = 0
       while total_inserted_balance < product_to_buy.price
         puts "Total inserted balance #{total_inserted_balance}p"
-        selection = @prompt.enum_select('Select coins', accepted_coins_prices, default: 1, per_page: 10)
+        selection = @prompt.enum_select('Select coins', accepted_coins_prices, default: 1, per_page: 20)
         selection = accepted_coins_prices.each_index.select { |index| accepted_coins_prices[index] == selection }.first
         inserted_coin = @accepted_coins[selection.to_i]
         inserted_coins[inserted_coin] = inserted_coins.has_key?(inserted_coin) ? inserted_coins[inserted_coin] + 1 : 1
@@ -64,7 +64,7 @@ module VendingMachine
     def reload_product_selection(all_stock)
       products = all_stock.keys
       print_to_select = print_product(products, all_stock) << 'back'
-      selection = @prompt.enum_select('Selected ', print_to_select, default: 1)
+      selection = @prompt.enum_select('Selected ', print_to_select, default: 1, per_page: 20)
       item = print_to_select.each_index.select { |index| print_to_select[index] == selection }.first
 
       return nil if selection == 'back'
@@ -76,7 +76,7 @@ module VendingMachine
     def reload_change_selection(all_coins)
       coins = all_coins.keys
       print_to_select = print_coins(coins, all_coins) << 'back'
-      selection = @prompt.enum_select('Selected ', print_to_select, default: 1)
+      selection = @prompt.enum_select('Selected ', print_to_select, default: 1, per_page: 20)
       item = print_to_select.each_index.select { |index| print_to_select[index] == selection }.first
       return nil if selection == 'back'
 
