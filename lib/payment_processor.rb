@@ -1,4 +1,3 @@
-require 'pry'
 require 'set'
 
 module VendingMachine
@@ -29,7 +28,7 @@ module VendingMachine
       current_coins = @change.clone
       sorted_coins = Set.new(current_coins.keys.sort { |a,b| b.pence <=> a.pence })
       inserted_total_pence = sum_coins_pence(inserted_coins)
-      coins_to_ret = {}
+      change_to_ret = {}
       change = inserted_total_pence - product.price
       assert_coins_inserted(inserted_total_pence, product)
       assert_enough_balance(change)
@@ -38,7 +37,7 @@ module VendingMachine
           coin = sorted_coins.find { |coin| change >= coin.pence }
           assert_sufficient_coins(coin)
           change = change - coin.pence
-          update_coins_to_return(coin, coins_to_ret)
+          update_coins_to_return(coin, change_to_ret)
           current_coins[coin] = current_coins[coin] - 1
           if current_coins[coin] <= 0
             current_coins.delete coin
@@ -48,43 +47,27 @@ module VendingMachine
       end
       @change = current_coins
       deposit_coins(inserted_coins)
-      coins_to_ret
+      change_to_ret
     end
 
     def assert_sufficient_coins(coin)
-      if coin.nil?
-        raise InsufficientCoins.new('Not enough coins to return change.')
-      end
+      raise InsufficientCoins.new('Not enough coins to return change.') if coin.nil?
     end
 
     def update_coins_to_return(coin, coins_to_ret)
-      if coins_to_ret.has_key? coin
-        coins_to_ret[coin] = coins_to_ret[coin] + 1
-      else
-        coins_to_ret[coin] = 1
-      end
+      coins_to_ret[coin] = coins_to_ret.has_key?(coin) ? coins_to_ret[coin] + 1 : 1
     end
 
     def assert_enough_balance(change)
-      if @balance_in_pence < change
-        raise InsufficientBalance.new('Not enough balance in Vending to return change.')
-      end
+      raise InsufficientBalance.new('Not enough balance in Vending to return change.') if @balance_in_pence < change
     end
 
     def assert_coins_inserted(total_inserted, product)
-      if total_inserted < product.price
-        raise InsufficientCoins.new('Not enough coins inserted')
-      end
+      raise InsufficientCoins.new('Not enough coins inserted') if total_inserted < product.price
     end
 
     def deposit_coins(coins)
-      coins.each do |coin, count|
-        if @change.has_key? coin
-          @change[coin] = @change[coin] + count
-        else
-          @change[coin] = count
-        end
-      end
+      coins.each { |coin, count| @change[coin] = @change.has_key?(coin) ? @change[coin] + count : count }
       @balance_in_pence = sum_coins_pence(@change)
     end
 

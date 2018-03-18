@@ -52,7 +52,7 @@ module VendingMachine
       total_inserted_balance = 0
       while total_inserted_balance < product_to_buy.price
         puts "Total inserted balance #{total_inserted_balance}p"
-        selection = @prompt.enum_select('Select coins', accepted_coins_prices, default: 1)
+        selection = @prompt.enum_select('Select coins', accepted_coins_prices, default: 1, per_page: 10)
         selection = accepted_coins_prices.each_index.select { |index| accepted_coins_prices[index] == selection }.first
         inserted_coin = @accepted_coins[selection.to_i]
         inserted_coins[inserted_coin] = inserted_coins.has_key?(inserted_coin) ? inserted_coins[inserted_coin] + 1 : 1

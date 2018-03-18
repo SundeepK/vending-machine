@@ -1,6 +1,5 @@
 require_relative '../lib/console_selector'
 require 'tty-prompt'
-require 'pry'
 
 RSpec.describe VendingMachine::ConsoleSelector do
 

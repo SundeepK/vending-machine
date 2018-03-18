@@ -13,8 +13,11 @@ require 'runner'
 coins = {
     VendingMachine::Coin.new('£1') => 1,
     VendingMachine::Coin.new('£2') => 3,
+    VendingMachine::Coin.new('50p') => 2,
     VendingMachine::Coin.new('20p') => 5,
     VendingMachine::Coin.new('10p') => 5,
+    VendingMachine::Coin.new('5p') => 5,
+    VendingMachine::Coin.new('2p') => 5,
     VendingMachine::Coin.new('1p') => 5
 }
 
