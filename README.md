@@ -1,5 +1,7 @@
 # VendingMachine
 
+A simple vending machine to learn more about ruby. It's not perfect as I'm still going along the language to learn more.
+
 ## Requirements
 Ruby (2.5.0p0), Bundler
 
